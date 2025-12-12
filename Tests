@@ -1,0 +1,13 @@
+Unit tests for models, API endpoints (DRF APITestCase) and websocket consumers.
+
+Add tests for:
+
+  1.Create a post + media
+
+  2.Like a post (idempotency)
+
+  3.Comment creation + nested comments
+
+  4.Friend request flow
+
+  5.Notification creation + websocket delivery (channels testing helpers)
