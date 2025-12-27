@@ -6,3 +6,17 @@ psycopg2-binary
 Pillow
 django-cors-headers
 gunicorn
+
+
+pip install Django djangorestframework channels channels_redis psycopg2-binary Pillow django-cors-headers gunicorn
+pip freeze > requirements.txt
+
+
+
+## Features
+- Create User model with profile extension
+- Implement Post model with media uploads
+- Build Comment and Like systems
+- Create Friend Request and Following system
+- Implement real-time notifications with WebSockets
+...
