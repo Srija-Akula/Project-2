@@ -1,22 +1,10 @@
-Django>=4.2
-djangorestframework
-channels
-channels_redis
-psycopg2-binary
-Pillow
-django-cors-headers
-gunicorn
-
-
-pip install Django djangorestframework channels channels_redis psycopg2-binary Pillow django-cors-headers gunicorn
-pip freeze > requirements.txt
-
-
-
-## Features
-- Create User model with profile extension
-- Implement Post model with media uploads
-- Build Comment and Like systems
-- Create Friend Request and Following system
-- Implement real-time notifications with WebSockets
-...
+Django==4.2.5
+djangorestframework==3.14.0
+channels==4.0.0
+channels_redis==4.1.0
+psycopg2-binary==2.9.9
+Pillow==10.1.0
+django-cors-headers==4.3.1
+gunicorn==21.2.0
+whitenoise==6.6.0
+python-dotenv==1.0.0
