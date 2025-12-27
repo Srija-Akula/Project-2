@@ -1,8 +1,8 @@
-Django==4.2.5
-djangorestframework==3.14.0
-channels==4.0.0
-channels_redis==4.0.0
-psycopg2-binary==2.9.6
-Pillow==9.5.0
-django-cors-headers==3.14.0
-gunicorn==20.1.0
+Django>=4.2
+djangorestframework
+channels
+channels_redis
+psycopg2-binary
+Pillow
+django-cors-headers
+gunicorn
