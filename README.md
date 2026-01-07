@@ -1,316 +1,130 @@
-----Social Media Platform – Full-Stack Application
+## Project Title
 
-A fully-featured social media platform built using Django, Django REST Framework, Django Channels, Redis, PostgreSQL, and a React frontend.
-This project includes real-time notifications, user profiles, posts, comments, likes, friend system, media uploads, and a clean API for mobile apps.
+Social Media Platform – Django REST Framework
 
-----Features
-----User & Profile
+## Description
 
-User registration, login (JWT auth)
+This project is a backend-powered Social Media Platform built using Django and Django REST Framework.
+It provides RESTful APIs for user authentication, posts, likes, comments, friend requests, and real-time notifications.
+The project follows a modular, scalable architecture suitable for real-world applications.
 
-Profile with avatar, bio, display name
-
-Edit profile settings
-
-Privacy controls (public/private profiles)
-
-----Posts & Media
-
-Create text posts
-
-Upload images/videos
-
-Edit & delete posts
-
-Feed & explore pages
-
-Post filtering, search, pagination
-
-----Social Interactions
-
-Like & unlike posts
-
-Comment & reply (nested comments)
-
-Display likes count and comment threads
-
-----Friend / Follow System
-
-Send friend requests
-
-Accept / reject friend request
-
-Follow & unfollow users
-
-Followers / following lists
-
-----Real-Time Notifications
-
-Using Django Channels + Redis:
-
-Instant notifications for:
-
-Likes
-
-Comments
-
-Friend requests
-
-Live WebSocket connection from frontend
-
-----REST API (Django REST Framework)
-
-Full JSON API for mobile apps
-
-JWT authentication
-
-Pagination, filtering, search
-
-----Frontend (React or any SPA)
-
-Authentication
-
-Feed with infinite scroll
-
-Real-time notification popup
-
-Create posts with media
-
-Profile management
-
-----Backend Architecture
-
-Django + DRF for API
-
-Channels for WebSockets
-
-Redis for channel layer + caching
-
-PostgreSQL for relational data
-
-Optional: Celery for async tasks
-
-----Deployment Ready
-
-Includes:
-
-Dockerfile
-
-docker-compose.yml
-
-Production environment variable config
-
-S3 media storage support
-
-----Project Structure
-socialapp/
-│
-├── backend/
-│   ├── config/                 # Django project
-│   ├── users/                  # Custom user + profiles
-│   ├── posts/                  # Posts, media, likes, comments
-│   ├── friends/                # Friend/follow system
-│   ├── notifications/          # Real-time notifications
-│   ├── requirements.txt
-│   ├── manage.py
-│   └── .env.example
-│
-└── frontend/
-    ├── src/
-    ├── package.json
-    └── README.md
-
-----Installation & Setup
-----Clone the repository
-git clone https://github.com/your-username/social-media-platform.git
-cd social-media-platform
-
-----Using Docker (Recommended)
-----Build & run all services (backend, frontend, db, redis)
-docker-compose up --build
-
-
-Services started:
-
-Service	Port
-Django API	http://localhost:8000
-
-React Frontend	http://localhost:3000
-
-PostgreSQL	5432
-Redis	6379
-----Environment Variables
-
-Copy .env.example → .env:
-
-cd backend
-cp .env.example .env
-
-
-Fill in:
-
-Django secret key
-
-JWT signing key
-
-Database password
-
-Email credentials (optional)
-
-----Database Migrations
-
-Inside backend container:
-
-docker-compose exec web python manage.py migrate
-
-
-Create admin user:
-
-docker-compose exec web python manage.py createsuperuser
-
-----Running Tests
-docker-compose exec web python manage.py test
-
-----API Documentation
-
-Once backend is running:
-
-http://localhost:8000/api/
-
-
-API includes:
-
-/auth/ – JWT login / register
-
-/users/
-
-/posts/
-
-/comments/
-
-/likes/
-
-/friends/
-
-/notifications/
-
-----Real-Time Notifications (WebSockets)
-
-WebSocket endpoint:
-
-ws://localhost:8000/ws/notifications/?token=JWT_TOKEN
-
-
-Frontend listens for:
-
-{
-  "type": "notification",
-  "verb": "liked your post",
-  "actor": "john_doe",
-  "target": 55,
-  "timestamp": "2025-01-01T12:00:00Z"
-}
-
-----Media Storage
-
-Local dev:
-
-/media/
-
-
-Production (optional):
-
-S3 bucket via django-storages
-
-----Deployment Guide
-Recommended stack:
-
-Nginx reverse proxy
-
-Daphne / Uvicorn ASGI server
-
-Redis for Channels
-
-PostgreSQL managed DB
-
-S3 / Cloud Storage for media
-
-Docker Compose or Kubernetes
-
-Production features:
-
-HTTPS (LetsEncrypt)
-
-CORS protection
-
-JWT rotation
-
-Scaling WebSockets horizontally
-
-----Technologies Used
+## Tech Stack
 
 Backend
 
-Python 3
+Python
 
 Django
 
 Django REST Framework
 
-Django Channels
+JWT Authentication
 
-Redis
+Database
 
-PostgreSQL
+SQLite (Development)
 
-Celery (optional)
+PostgreSQL (Production-ready)
 
-Frontend
+Tools & Others
 
-React
+Docker & Docker Compose
 
-Axios / Fetch
+Django Signals
 
-Context API or Redux
+REST APIs
 
-TailwindCSS / Bootstrap
+Environment Variables (.env)
 
-DevOps
+## Features
 
-Docker / Docker Compose
+User registration & authentication (JWT)
 
-GitHub Actions (optional)
+User profile management
 
-Nginx
+Create, update & delete posts
 
-----Roadmap / Future Enhancements
+Like and comment on posts
 
-Stories (24-hour posts)
+Friend request & accept system
 
-Chat / Direct Messaging (WebSockets)
+Real-time notifications
 
-Groups / Pages
+RESTful API architecture
 
-Video transcoding via Celery
+Secure environment-based configuration
 
-Push Notifications (Web Push)
+Modular Django apps
 
-Dark mode UI
+API testing support
 
----- Contributing
+## Project Structure
 
-Pull requests are welcome!
+Project-2/
+│
+├── Users/
+├── Posts/
+├── Friends/
+├── Notifications/
+├── API/
+├── Tests/
+├── Docker-compose.yml
+├── Requirements.txt
+├── .env.example
+└── README.md
 
-Steps:
+## Authentication
 
-Fork repo
+JWT based authentication
 
-Create new branch
+Access & Refresh tokens
 
-Commit changes
+Secured endpoints using permissions
 
-Open PR
+## Installation & Setup
 
-📜 License
+1. Clone Repository
+git clone https://github.com/Srija-Akula/Project-2.git
+cd Project-2
 
-MIT License – free to use and modify.
+2. Create Virtual Environment
+python -m venv venv
+source venv/bin/activate
+
+3. Install Dependencies
+pip install -r Requirements.txt
+
+4. Setup Environment Variables
+
+Create .env file using .env.example
+
+5. Run Migrations
+python manage.py migrate
+
+6. Start Server
+python manage.py runserver
+
+## Sample API Endpoints
+
+Method	 Endpoint	             Description
+POST	/api/auth/register/	     User Registration
+POST	/api/auth/login/	     User Login
+GET	    /api/posts/	             List Posts
+POST	/api/posts/create/	     Create Post
+POST	/api/friends/request/	 Send Friend Request
+GET	    /api/notifications/	     Get Notifications
+
+## Testing
+
+Unit tests available in Tests/
+
+API tested using Postman
+
+## License
+
+This project is licensed under the MIT License.
+
+## Author
+
+Srija Akula
+GitHub: https://github.com/Srija-Akula
