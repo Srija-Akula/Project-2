@@ -11,3 +11,6 @@ Add tests for:
   4.Friend request flow
 
   5.Notification creation + websocket delivery (channels testing helpers)
+
+from rest_framework.test import APITestCase
+
