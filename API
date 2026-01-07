@@ -2,6 +2,22 @@
 from rest_framework import serializers
 from .models import Post, Comment, Like, Media
 from users.serializers import UserSerializer
+from rest_framework.permissions import IsAuthenticated
+
+class PostView(APIView):
+    permission_classes = [IsAuthenticated]
+
+filter_backends = [SearchFilter]
+search_fields = ['content', 'user__username']
+
+REST_FRAMEWORK = {
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "PAGE_SIZE": 10
+}
+
+class IsOwnerOrReadOnly(BasePermission):
+    def has_object_permission(self, request, view, obj):
+        return obj.user == request.user
 
 class MediaSerializer(serializers.ModelSerializer):
     class Meta:
@@ -22,3 +38,8 @@ class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
         fields = ('id','author','content','media','likes_count','comments','created_at','updated_at')
+
+pip install drf-yasg
+
+path('swagger/', schema_view.with_ui('swagger'))
+
