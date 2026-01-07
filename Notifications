@@ -70,3 +70,13 @@ def notify_user(recipient_id, payload):
         {'type': 'send_notification', 'payload': payload}
     )
 
+## Signals for Notifications
+
+@receiver(post_save, sender=Like)
+def notify_like(sender, instance, created, **kwargs):
+    if created:
+        Notification.objects.create(
+            user=instance.post.user,
+            message="Someone liked your post"
+        )
+
