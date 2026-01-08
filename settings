@@ -1,0 +1,39 @@
+# settings.py
+
+import os
+from pathlib import Path
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+# SECRET_KEY - use environment variable
+SECRET_KEY = os.environ.get("SECRET_KEY", "fallback-secret")
+
+DEBUG = os.environ.get("DEBUG", "False") == "True"
+
+ALLOWED_HOSTS = ["project-2.onrender.com"]  # your Render URL
+
+# Apps, Middleware, etc.
+INSTALLED_APPS = [
+    # your apps
+]
+
+MIDDLEWARE = [
+    "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",  # for static files
+    # other middleware
+]
+
+# Static files
+STATIC_URL = "/static/"
+STATIC_ROOT = BASE_DIR / "staticfiles"
+
+# CSRF trusted
+CSRF_TRUSTED_ORIGINS = [
+    "https://project-2.onrender.com"
+]
+
+# Database (Postgres)
+import dj_database_url
+DATABASES = {
+    "default": dj_database_url.config(default=os.environ.get("DATABASE_URL"))
+}
