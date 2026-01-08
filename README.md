@@ -28,13 +28,18 @@ This project allows users to create profiles, share posts, interact through like
 ## Project Structure
 
 Project-2/
-│
-├── backend/
-├── manage.py
-├── requirements.txt
-├── Procfile
 ├── .env.example
-└── README.md
+├── API/
+├── Friends/
+├── Notifications/
+├── Posts/
+├── Users/
+├── Tests/
+├── Requirements.Txt
+├── Docker-Compose.yml
+├── README.md
+└── LICENSE
+
 
 
 ## Installation (Local Setup)
