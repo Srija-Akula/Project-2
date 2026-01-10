@@ -167,11 +167,3 @@ redis-server
 python manage.py runserver
 ```
 
-
-## Result
-
-1. Real-time notifications
-2. WebSocket-based delivery
-3. Scalable architecture
-4. Industry-level feature
-
