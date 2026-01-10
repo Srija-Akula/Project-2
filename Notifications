@@ -175,12 +175,3 @@ python manage.py runserver
 3. Scalable architecture
 4. Industry-level feature
 
-
-
-## Next Improvements
-
-* Save notifications to DB
-* Notification dropdown UI
-* Mark as read (real-time)
-* Push notifications
-
