@@ -59,16 +59,21 @@ A fully-featured **Social Media Platform backend** built using **Django** and **
 
 ```
 Project-2/
-├── accounts/         # User authentication & profiles
-├── posts/            # Posts, likes, comments
-├── friends/          # Friend request system
-├── notifications/    # User notifications
-├── api/              # API routing
-├── core/             # Project settings
-├── manage.py
-├── requirements.txt
-├── Dockerfile
-└── .env.example
+├── .env.example
+├── API/
+├── Docker-Compose.yml
+├── DockerFile
+├── Friends/
+├── Notifications/
+├── Posts/
+├── README.md
+├── Requirements.Txt
+├── Tests/
+├── Users/
+├── permissions/
+├── settings/
+├── swagger API/
+
 ```
 
 ---
