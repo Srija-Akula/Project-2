@@ -1,0 +1,61 @@
+import requests
+
+# Django server URL
+BASE_URL = "http://127.0.0.1:8000"
+
+# Fetch posts
+try:
+    posts_res = requests.get(f"{BASE_URL}/api/posts/")  # adjust API endpoint if needed
+    posts = posts_res.json()
+except:
+    # Fallback sample data
+    posts = [
+        {"user": "John Doe", "time": "2 hours ago", "content": "Just completed my Django project!", "likes": 42, "comments": 8},
+        {"user": "Sarah Lee", "time": "4 hours ago", "content": "Learning Django has been incredible!", "likes": 56, "comments": 12}
+    ]
+
+# Fetch notifications
+try:
+    notifications_res = requests.get(f"{BASE_URL}/api/notifications/")  # adjust API endpoint
+    notifications = notifications_res.json()
+except:
+    notifications = ["Mike liked your post", "Sarah commented on your photo", "David started following you"]
+
+# Fetch who to follow (optional)
+who_to_follow = ["David Chen (Web Developer)", "Priya Sharma (Python Enthusiast)", "Mark Wilson (Open Source Contributor)"]
+
+# Stats
+stats = {"Posts": 24, "Followers": 156, "Following": 89, "Total Likes": 1245}
+
+# Display HOME PAGE
+print("SOCIAL MEDIA PLATFORM - HOME PAGE")
+print("="*35, "\n")
+
+print(" Welcome back, Alex!")
+print(" What's on your mind?")
+print("[Share your thoughts...] [Upload Image] [Post]\n")
+
+print(" FEED:\n")
+for post in posts:
+    user = post.get("user", "Unknown")
+    time = post.get("time", "Unknown time")
+    content = post.get("content", "")
+    likes = post.get("likes", 0)
+    comments = post.get("comments", 0)
+    print(f" {user} - {time}")
+    print(f"{content}")
+    print(f" {likes} Likes | 💬 {comments} Comments |  Share\n")
+
+print("👥 WHO TO FOLLOW:")
+for person in who_to_follow:
+    print(f"- {person}")
+print()
+
+print(f" NOTIFICATIONS ({len(notifications)} new):")
+for n in notifications:
+    print(f"• {n}")
+print()
+
+print("STATS:")
+for key, value in stats.items():
+    print(f"• {key}: {value}")
