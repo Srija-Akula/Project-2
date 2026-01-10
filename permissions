@@ -1,0 +1,12 @@
+## Permissions & Authentication
+
+from rest_framework.permissions import IsAuthenticated
+
+class PostCreateView(APIView):
+permission_classes = [IsAuthenticated]
+
+## custom permissions:
+
+class IsOwner(BasePermission):
+def has_object_permission(self, request, view, obj):
+return obj.user == request.user
