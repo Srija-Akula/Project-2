@@ -3,6 +3,13 @@
 A fully-featured **Social Media Platform backend** built using **Django** and **Django REST Framework**. This project provides scalable REST APIs for user authentication, profiles, posts, likes, comments, friend requests, and notifications. It is designed to be frontend-agnostic and production-ready.
 
 
+## Project Structure
+- Users: Authentication & profiles
+- Posts: Create, like, comment posts
+- Friends: Follow / Friend system
+- Notifications: Real-time alerts
+
+
 ## Features
 
 ### User & Authentication
@@ -104,6 +111,7 @@ pip install -r requirements.txt
 
 ### Environment variables
 
+This project uses environment variables for security.
 Create a `.env` file using `.env.example` and add required values.
 
 ### Run migrations
@@ -168,6 +176,9 @@ Recommended production setup:
 * Internship & placement portfolio project
 * Backend for social media web or mobile apps
 * Learning REST APIs & Django architecture
+
+
+Note: Deployment is in progress on Render.
 
 
 ## Author
