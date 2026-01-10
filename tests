@@ -14,3 +14,26 @@ Add tests for:
 
 from rest_framework.test import APITestCase
 
+
+from rest_framework.test import APITestCase
+from django.urls import reverse
+from rest_framework import status
+from django.contrib.auth.models import User
+
+class UserAuthTests(APITestCase):
+    def setUp(self):
+        self.register_url = reverse('register')  # Adjust to your URL name
+        self.login_url = reverse('login')
+
+    def test_register_user(self):
+        data = {"username": "testuser", "password": "StrongPass123"}
+        response = self.client.post(self.register_url, data)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_login_user(self):
+        User.objects.create_user(username="testuser", password="StrongPass123")
+        data = {"username": "testuser", "password": "StrongPass123"}
+        response = self.client.post(self.login_url, data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+
