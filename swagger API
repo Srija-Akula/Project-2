@@ -1,0 +1,86 @@
+# Swagger / OpenAPI Documentation for Project-2
+
+
+## Step 1: Install Required Package
+
+```bash
+pip install drf-yasg
+```
+
+Add it to `requirements.txt`:
+
+```text
+drf-yasg
+```
+
+## Step 2: Update `settings.py`
+
+Add `drf_yasg` to `INSTALLED_APPS`:
+
+```python
+INSTALLED_APPS = [
+    'drf_yasg',
+    'rest_framework',
+    ...
+]
+```
+
+## Step 3: Configure Swagger URLs
+
+Open your **main `urls.py`** (usually `core/urls.py`):
+
+```python
+from django.contrib import admin
+from django.urls import path, re_path
+from rest_framework import permissions
+from drf_yasg.views import get_schema_view
+from drf_yasg import openapi
+
+schema_view = get_schema_view(
+    openapi.Info(
+        title="Social Media Platform API",
+        default_version='v1',
+        description="API documentation for Project-2 Social Media Platform",
+        contact=openapi.Contact(email="srija@example.com"),
+    ),
+    public=True,
+    permission_classes=(permissions.AllowAny,),
+)
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('api/', include('api.urls')),
+
+    # Swagger URLs
+    re_path(r'^swagger/$', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
+    re_path(r'^redoc/$', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
+]
+```
+
+
+## Step 4: Add Docstrings to Views (Important)
+
+Example for a Post API view:
+
+```python
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
+
+class PostCreateView(APIView):
+
+    @swagger_auto_schema(
+        operation_description="Create a new post",
+        request_body=PostSerializer,
+        responses={201: PostSerializer}
+    )
+    def post(self, request):
+        ...
+```
+
+
+## Step 5: Run Server
+
+```bash
+python manage.py runserver
+```
+
