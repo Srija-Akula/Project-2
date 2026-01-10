@@ -1,82 +1,186 @@
-# notifications/models.py
-from django.db import models
-from django.conf import settings
+# Real-Time Notifications with Django Channels (Step-by-Step)
 
-class Notification(models.Model):
-    recipient = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='notifications')
-    actor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='+', null=True, blank=True)
-    verb = models.CharField(max_length=255)  # e.g. "liked", "commented", "sent you a friend request"
-    target_content_type = models.ForeignKey('contenttypes.ContentType', null=True, blank=True, on_delete=models.CASCADE)
-    target_object_id = models.PositiveIntegerField(null=True, blank=True)
-    unread = models.BooleanField(default=True)
-    timestamp = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self):
-        return f'Notif to {self.recipient}: {self.verb}'
+## Users will receive **instant notifications** when:
 
-# notifications/consumers.py
+* Someone sends a friend request
+* Someone likes their post
+* Someone comments on their post
+
+Notifications will be delivered using **WebSockets** instead of HTTP polling.
+
+
+## Requirements
+
+Install required packages:
+
+```bash
+pip install channels channels-redis
+```
+
+
+## Step 1: Update `settings.py`
+
+### Add Channels
+
+```python
+INSTALLED_APPS = [
+    'channels',
+    'notifications',
+    ...
+]
+```
+
+### ASGI Configuration
+
+```python
+ASGI_APPLICATION = 'core.asgi.application'
+```
+
+### Channel Layers (Redis)
+
+```python
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            'hosts': [('127.0.0.1', 6379)],
+        },
+    },
+}
+```
+
+
+## Step 2: Update `asgi.py`
+
+```python
+import os
+from channels.routing import ProtocolTypeRouter, URLRouter
+from django.core.asgi import get_asgi_application
+from channels.auth import AuthMiddlewareStack
+import notifications.routing
+
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'core.settings')
+
+application = ProtocolTypeRouter({
+    'http': get_asgi_application(),
+    'websocket': AuthMiddlewareStack(
+        URLRouter(
+            notifications.routing.websocket_urlpatterns
+        )
+    ),
+})
+```
+
+
+## Step 3: Create WebSocket Consumer
+
+### `notifications/consumers.py`
+
+```python
 import json
-from channels.generic.websocket import AsyncJsonWebsocketConsumer
-from channels.db import database_sync_to_async
-from django.contrib.auth.models import AnonymousUser
-from rest_framework_simplejwt.tokens import UntypedToken
-from django.contrib.auth import get_user_model
-from jwt import decode as jwt_decode
-from django.conf import settings
+from channels.generic.websocket import AsyncWebsocketConsumer
 
-User = get_user_model()
-
-class NotificationConsumer(AsyncJsonWebsocketConsumer):
+class NotificationConsumer(AsyncWebsocketConsumer):
     async def connect(self):
-        # expect JWT token as query param ?token=...
-        token = self.scope['query_string'].decode().split('token=')[-1] if b'token' in self.scope['query_string'] else None
-        user = None
-        if token:
-            try:
-                payload = jwt_decode(token, settings.SIMPLE_JWT['SIGNING_KEY'], algorithms=[settings.SIMPLE_JWT['ALGORITHM']])
-                user = await database_sync_to_async(User.objects.get)(id=payload['user_id'])
-            except Exception:
-                user = None
-        if user:
-            self.user = user
-            self.group_name = f'user_{user.id}'
+        self.user = self.scope['user']
+        if self.user.is_anonymous:
+            await self.close()
+        else:
+            self.group_name = f'user_{self.user.id}'
             await self.channel_layer.group_add(self.group_name, self.channel_name)
             await self.accept()
-        else:
-            await self.close(code=4001)
 
-    async def disconnect(self, code):
-        if hasattr(self, 'group_name'):
-            await self.channel_layer.group_discard(self.group_name, self.channel_name)
-
-    async def receive_json(self, content, **kwargs):
-        # optional: ping/pong or mark-as-read
-        pass
+    async def disconnect(self, close_code):
+        await self.channel_layer.group_discard(self.group_name, self.channel_name)
 
     async def send_notification(self, event):
-        # event contains {'type':'send_notification', 'payload': {...} }
-        await self.send_json(event['payload'])
+        await self.send(text_data=json.dumps({
+            'message': event['message']
+        }))
+```
 
 
-When someone likes a post, create a Notification and do:
+## Step 4: WebSocket Routing
 
-from asgiref.sync import async_to_sync
+### `notifications/routing.py`
+
+```python
+from django.urls import re_path
+from .consumers import NotificationConsumer
+
+websocket_urlpatterns = [
+    re_path(r'ws/notifications/$', NotificationConsumer.as_asgi()),
+]
+```
+
+
+## Step 5: Send Notifications Using Signals
+
+### Example: Like Notification
+
+```python
 from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
 
-def notify_user(recipient_id, payload):
-    channel_layer = get_channel_layer()
-    async_to_sync(channel_layer.group_send)(
-        f'user_{recipient_id}',
-        {'type': 'send_notification', 'payload': payload}
-    )
+channel_layer = get_channel_layer()
 
-## Signals for Notifications
+async_to_sync(channel_layer.group_send)(
+    f'user_{post.author.id}',
+    {
+        'type': 'send_notification',
+        'message': f'{request.user.username} liked your post'
+    }
+)
+```
 
-@receiver(post_save, sender=Like)
-def notify_like(sender, instance, created, **kwargs):
-    if created:
-        Notification.objects.create(
-            user=instance.post.user,
-            message="Someone liked your post"
-        )
+You can trigger this inside:
+
+* Like view
+* Comment creation
+* Friend request creation
+
+
+## Step 6: Frontend WebSocket (Basic)
+
+```javascript
+const socket = new WebSocket('ws://127.0.0.1:8000/ws/notifications/');
+
+socket.onmessage = function(event) {
+    const data = JSON.parse(event.data);
+    alert(data.message);
+};
+```
+
+
+## Running the System
+
+1. Start Redis server
+
+```bash
+redis-server
+```
+
+2. Run Django with ASGI
+
+```bash
+python manage.py runserver
+```
+
+
+## Result
+
+1. Real-time notifications
+2. WebSocket-based delivery
+3. Scalable architecture
+4. Industry-level feature
+
+
+
+## Next Improvements
+
+* Save notifications to DB
+* Notification dropdown UI
+* Mark as read (real-time)
+* Push notifications
 
